@@ -93,12 +93,6 @@ class LiveMapController extends StatefulMapController{
 
     //print("UPDATING LIVE MARKER FROM POS $position");
     LatLng point = LatLng(position.latitude, position.longitude);
-    try {
-      await removeMarker(name: "livemarker");
-    } catch (e) {
-      print(e);
-      print("WARNING: livemap: can not remove livemarker from map");
-    }
     Marker liveMarker = Marker(
         point: point,
         width: 80.0,
@@ -171,10 +165,10 @@ class LiveMapController extends StatefulMapController{
     final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
     var _mapAnimationController = new AnimationController(
-        duration: const Duration(milliseconds: 100), vsync: tickerProvider);
+        duration: const Duration(milliseconds: 500), vsync: tickerProvider);
 
     Animation<double> animation = CurvedAnimation(
-        parent: _mapAnimationController, curve: Curves.fastOutSlowIn);
+        parent: _mapAnimationController, curve: Curves.linear);
 
     _mapAnimationController.addListener(() {
       mapController.move(
