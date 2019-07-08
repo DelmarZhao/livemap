@@ -15,7 +15,9 @@ class LiveMapController extends StatefulMapController{
   LiveMapController(
       {@required this.mapController,
       this.positionStream,
-      this.positionStreamEnabled, @required this.tickerProvider})
+      this.positionStreamEnabled,
+      @required this.tickerProvider,
+      @required this.liveMarkerImage})
       : assert(mapController != null),
         super(mapController: mapController) {
     positionStreamEnabled = positionStreamEnabled ?? true;
@@ -41,6 +43,8 @@ class LiveMapController extends StatefulMapController{
   /// Enable or not the position stream
   bool positionStreamEnabled;
 
+  ///the image to use as the live marker
+  Image liveMarkerImage;
 
   StreamSubscription<Position> _positionStreamSubscription;
   final Completer<Null> _livemapReadyCompleter = Completer<Null>();
@@ -72,14 +76,14 @@ class LiveMapController extends StatefulMapController{
     notify("toggleAutoCenter", autoCenter, toggleAutoCenter);
   }
 
-  ///the current position
-  Position _curPosition;
+  ///the current heading
+  double _curHeading;
 
   /// Updates the livemarker on the map from a Geolocator position
   Future<void> updateLiveGeoMarkerFromPosition(
       {@required Position position}) async {
     if (position == null) throw ArgumentError("position must not be null");
-    _curPosition = position;
+    _curHeading = position.speed == 0 ? _curHeading : position.heading;
 
     _liveMarker ??= Marker(
         point: LatLng(0.0, 0.0),
@@ -120,11 +124,8 @@ class LiveMapController extends StatefulMapController{
   Widget _liveMarkerWidgetBuilder(BuildContext _) {
     return Container(
       child: Transform.rotate(
-        angle: _curPosition.heading * pi / 180,
-        child: const Icon(
-          Icons.navigation,
-          color: Colors.red,
-        ),
+        angle: _curHeading * pi / 180,
+        child: liveMarkerImage,
       )
     );
   }
