@@ -86,7 +86,7 @@ class LiveMapController {
         point: point,
         width: 80.0,
         height: 80.0,
-        builder: _liveMarkerWidgetBuilder);
+        builder: Container(child: Transform.rotate(angle: position.heading * pi / 180, child: _liveMarkerWidgetBuilder)));
     _liveMarker = liveMarker;
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
@@ -106,11 +106,9 @@ class LiveMapController {
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
-    return Container(
-      child: const Icon(
-        Icons.directions,
+    return const Icon(
+        Icons.navigation,
         color: Colors.red,
-      ),
     );
   }
 
