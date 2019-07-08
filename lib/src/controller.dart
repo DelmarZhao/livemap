@@ -81,12 +81,12 @@ class LiveMapController extends StatefulMapController{
     if (position == null) throw ArgumentError("position must not be null");
     _curPosition = position;
 
-    _liveMarker ??=  = Marker(
+    _liveMarker ??= Marker(
         point: LatLng(0.0, 0.0),
         width: 80.0,
         height: 80.0,
         builder: _liveMarkerWidgetBuilder);
-        
+
     //print("UPDATING LIVE MARKER FROM POS $position");
     LatLng point = LatLng(position.latitude, position.longitude);
     try {
