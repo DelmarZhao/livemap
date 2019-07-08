@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,7 +10,7 @@ import 'package:map_controller/map_controller.dart';
 import 'position_stream.dart';
 
 /// The map controller
-class LiveMapController extends StatefulMapController{
+class LiveMapController extends StatefulMapController with TickerProviderStateMixin{
   /// Provide a [MapController]
   LiveMapController(
       {@required this.mapController,
@@ -71,10 +72,14 @@ class LiveMapController extends StatefulMapController{
     notify("toggleAutoCenter", autoCenter, toggleAutoCenter);
   }
 
+  ///the current position
+  Position _curPosition;
+
   /// Updates the livemarker on the map from a Geolocator position
   Future<void> updateLiveGeoMarkerFromPosition(
       {@required Position position}) async {
     if (position == null) throw ArgumentError("position must not be null");
+    _curPosition = position;
     //print("UPDATING LIVE MARKER FROM POS $position");
     LatLng point = LatLng(position.latitude, position.longitude);
     try {
@@ -86,7 +91,7 @@ class LiveMapController extends StatefulMapController{
         point: point,
         width: 80.0,
         height: 80.0,
-        builder: Container(child: Transform.rotate(angle: position.heading * pi / 180, child : _liveMarkerWidgetBuilder)));
+        builder: _liveMarkerWidgetBuilder;
     _liveMarker = liveMarker;
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
@@ -107,10 +112,13 @@ class LiveMapController extends StatefulMapController{
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
     return Container(
-      child: const Icon(
-        Icons.navigation,
-        color: Colors.red,
-      ),
+      child: Transform.rotate(
+        angle: _curPosition.heading * pi / 180,
+        child: const Icon(
+          Icons.navigation,
+          color: Colors.red,
+        ),
+      )
     );
   }
 
@@ -148,10 +156,10 @@ class LiveMapController extends StatefulMapController{
 
   void animatedMapMove(LatLng destLocation, double destZoom) {
     final _latTween = Tween<double>(
-        begin: _mapController.center.latitude, end: destLocation.latitude);
+        begin: mapController.center.latitude, end: destLocation.latitude);
     final _lngTween = Tween<double>(
-        begin: _mapController.center.longitude, end: destLocation.longitude);
-    final _zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
+        begin: mapController.center.longitude, end: destLocation.longitude);
+    final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
     var _mapAnimationController = new AnimationController(
         duration: const Duration(milliseconds: 100), vsync: this);
