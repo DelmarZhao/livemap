@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'package:map_controller/map_controller.dart;
+import 'package:map_controller/map_controller.dart';
 import 'position_stream.dart';
 
 /// The map controller
