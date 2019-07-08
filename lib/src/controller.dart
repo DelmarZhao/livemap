@@ -86,7 +86,7 @@ class LiveMapController {
         point: point,
         width: 80.0,
         height: 80.0,
-        builder: Container(child: Transform.rotate(angle: position.heading * pi / 180, child: _liveMarkerWidgetBuilder)));
+        builder: )_liveMarkerWidgetBuilder(_);
     _liveMarker = liveMarker;
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
@@ -106,10 +106,12 @@ class LiveMapController {
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
-    return const Icon(
+    return Container(
+      child: const Icon(
         Icons.navigation,
         color: Colors.red,
-    );
+      );
+    )
   }
 
   /// Toggle live position stream updates
