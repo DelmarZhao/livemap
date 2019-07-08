@@ -9,7 +9,7 @@ import 'package:map_controller/map_controller.dart';
 import 'position_stream.dart';
 
 /// The map controller
-class LiveMapController {
+class LiveMapController extends StatefulMapController{
   /// Provide a [MapController]
   LiveMapController(
       {@required this.mapController,
