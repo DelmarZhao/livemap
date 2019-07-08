@@ -16,7 +16,7 @@ class LiveMapController extends StatefulMapController{
       {@required this.mapController,
       this.positionStream,
       this.positionStreamEnabled,
-      @required this.tickerProvider,
+      @required this.animationController,
       @required this.liveMarkerImage})
       : assert(mapController != null),
         super(mapController: mapController) {
@@ -51,7 +51,7 @@ class LiveMapController extends StatefulMapController{
   final _subject = PublishSubject<StatefulMapControllerStateChange>();
 
   /// The ticker provider for animations
-  TickerProvider tickerProvider;
+  AnimationController animationController;
 
   /// On ready callback: this is fired when the contoller is ready
   Future<Null> get onLiveMapReady => _livemapReadyCompleter.future;
@@ -59,7 +59,6 @@ class LiveMapController extends StatefulMapController{
   /// Dispose the position stream subscription
   void dispose() {
     _subject.close();
-    _mapAnimationController.dispose();
     if (_positionStreamSubscription != null)
       _positionStreamSubscription.cancel();
   }
@@ -158,9 +157,6 @@ class LiveMapController extends StatefulMapController{
         _positionStreamCallbackAction);
   }
 
-  /// The map animation controller
-  var _mapAnimationController;
-
   void animatedMapMove(LatLng destLocation, double destZoom) {
     final _latTween = Tween<double>(
         begin: mapController.center.latitude, end: destLocation.latitude);
@@ -168,18 +164,15 @@ class LiveMapController extends StatefulMapController{
         begin: mapController.center.longitude, end: destLocation.longitude);
     final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
-    _mapAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: tickerProvider);
-
     Animation<double> animation = CurvedAnimation(
         parent: _mapAnimationController, curve: Curves.linear);
 
-    _mapAnimationController.addListener(() {
+    animationController.addListener(() {
       mapController.move(
           LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)),
           _zoomTween.evaluate(animation));
     });
 
-    _mapAnimationController.forward();
+    animationController.forward();
   }
 }
