@@ -86,7 +86,7 @@ class LiveMapController {
         point: point,
         width: 80.0,
         height: 80.0,
-        builder: )_liveMarkerWidgetBuilder(_);
+        builder: _liveMarkerWidgetBuilder(_);
     _liveMarker = liveMarker;
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
