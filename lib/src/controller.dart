@@ -110,8 +110,8 @@ class LiveMapController extends StatefulMapController{
       child: const Icon(
         Icons.navigation,
         color: Colors.red,
-      );
-    )
+      ),
+    );
   }
 
   /// Toggle live position stream updates
