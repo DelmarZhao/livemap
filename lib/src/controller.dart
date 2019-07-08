@@ -5,11 +5,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'package:map_controller/map_controller.dart';
 import 'position_stream.dart';
 
 /// The map controller
-class LiveMapController extends StatefulMapController {
+class LiveMapController {
   /// Provide a [MapController]
   LiveMapController(
       {@required this.mapController,
@@ -31,7 +30,6 @@ class LiveMapController extends StatefulMapController {
   }
 
   /// The Flutter Map [MapController]
-  @override
   MapController mapController;
 
   /// The Geolocator position stream
