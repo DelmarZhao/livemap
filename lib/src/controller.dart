@@ -114,7 +114,7 @@ class LiveMapController extends StatefulMapController{
     notify("center", _newCenter, centerOnPosition);
   }
 
-  static Widget _liveMarkerWidgetBuilder(BuildContext _) {
+  Widget _liveMarkerWidgetBuilder(BuildContext _) {
     return Container(
       child: Transform.rotate(
         angle: _curPosition.heading * pi / 180,
