@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_map: ^0.5.0
+  flutter_map:
+    git: https://github.com/DelmarZhao/flutter_map.git
   slugify2: ^0.2.1
   geopoint: ^0.1.1
   fluttertoast: ^3.0.3
