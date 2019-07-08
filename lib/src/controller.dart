@@ -86,7 +86,7 @@ class LiveMapController extends StatefulMapController{
         point: point,
         width: 80.0,
         height: 80.0,
-        builder: Container(child: Transform.rotate(angle: position.heading * pi / 180, child : _liveMarkerWidgetBuilder));
+        builder: Container(child: Transform.rotate(angle: position.heading * pi / 180, child : _liveMarkerWidgetBuilder)));
     _liveMarker = liveMarker;
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
