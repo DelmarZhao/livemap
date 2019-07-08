@@ -59,6 +59,7 @@ class LiveMapController extends StatefulMapController{
   /// Dispose the position stream subscription
   void dispose() {
     _subject.close();
+    _mapAnimationController.dispose();
     if (_positionStreamSubscription != null)
       _positionStreamSubscription.cancel();
   }
@@ -157,6 +158,9 @@ class LiveMapController extends StatefulMapController{
         _positionStreamCallbackAction);
   }
 
+  /// The map animation controller
+  var _mapAnimationController;
+
   void animatedMapMove(LatLng destLocation, double destZoom) {
     final _latTween = Tween<double>(
         begin: mapController.center.latitude, end: destLocation.latitude);
@@ -164,7 +168,7 @@ class LiveMapController extends StatefulMapController{
         begin: mapController.center.longitude, end: destLocation.longitude);
     final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
-    var _mapAnimationController = new AnimationController(
+    _mapAnimationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: tickerProvider);
 
     Animation<double> animation = CurvedAnimation(
