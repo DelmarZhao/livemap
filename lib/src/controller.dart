@@ -86,21 +86,21 @@ class LiveMapController extends StatefulMapController{
         point: point,
         width: 80.0,
         height: 80.0,
-        builder: _liveMarkerWidgetBuilder);
+        builder: Container(child: Transform.rotate(angle: position.heading * pi / 180, child : _liveMarkerWidgetBuilder));
     _liveMarker = liveMarker;
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
 
   /// Center the map on the live marker
   Future<void> centerOnLiveMarker() async {
-    mapController.move(_liveMarker.point, mapController.zoom);
+    animatedMapMove(_liveMarker.point, mapController.zoom);
   }
 
   /// Center the map on a [Position]
   Future<void> centerOnPosition(Position position) async {
     //print("CENTER ON $position");
     LatLng _newCenter = LatLng(position.latitude, position.longitude);
-    mapController.move(_newCenter, mapController.zoom);
+    animatedMapMove(_newCenter, mapController.zoom);
     centerOnPoint(_newCenter);
     notify("center", _newCenter, centerOnPosition);
   }
@@ -144,5 +144,27 @@ class LiveMapController extends StatefulMapController{
     if (autoCenter) centerOnPosition(position);
     notify("currentPosition", LatLng(position.latitude, position.longitude),
         _positionStreamCallbackAction);
+  }
+
+  void animatedMapMove(LatLng destLocation, double destZoom) {
+    final _latTween = Tween<double>(
+        begin: _mapController.center.latitude, end: destLocation.latitude);
+    final _lngTween = Tween<double>(
+        begin: _mapController.center.longitude, end: destLocation.longitude);
+    final _zoomTween = Tween<double>(begin: _mapController.zoom, end: destZoom);
+
+    var _mapAnimationController = new AnimationController(
+        duration: const Duration(milliseconds: 100), vsync: this);
+
+    Animation<double> animation = CurvedAnimation(
+        parent: _mapAnimationController, curve: Curves.fastOutSlowIn);
+
+    _mapAnimationController.addListener(() {
+      mapController.move(
+          LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)),
+          _zoomTween.evaluate(animation));
+    });
+
+    _mapAnimationController.forward();
   }
 }
