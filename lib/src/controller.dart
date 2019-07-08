@@ -165,7 +165,7 @@ class LiveMapController extends StatefulMapController{
     final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
     Animation<double> animation = CurvedAnimation(
-        parent: _mapAnimationController, curve: Curves.linear);
+        parent: animationController, curve: Curves.linear);
 
     animationController.addListener(() {
       mapController.move(
