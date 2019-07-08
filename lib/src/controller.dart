@@ -10,12 +10,12 @@ import 'package:map_controller/map_controller.dart';
 import 'position_stream.dart';
 
 /// The map controller
-class LiveMapController extends StatefulMapController with TickerProviderStateMixin{
+class LiveMapController extends StatefulMapController{
   /// Provide a [MapController]
   LiveMapController(
       {@required this.mapController,
       this.positionStream,
-      this.positionStreamEnabled})
+      this.positionStreamEnabled, @required this.tickerProvider})
       : assert(mapController != null),
         super(mapController: mapController) {
     positionStreamEnabled = positionStreamEnabled ?? true;
@@ -41,9 +41,13 @@ class LiveMapController extends StatefulMapController with TickerProviderStateMi
   /// Enable or not the position stream
   bool positionStreamEnabled;
 
+
   StreamSubscription<Position> _positionStreamSubscription;
   final Completer<Null> _livemapReadyCompleter = Completer<Null>();
   final _subject = PublishSubject<StatefulMapControllerStateChange>();
+
+  /// The ticker provider for animations
+  TickerProvider tickerProvider;
 
   /// On ready callback: this is fired when the contoller is ready
   Future<Null> get onLiveMapReady => _livemapReadyCompleter.future;
@@ -91,7 +95,7 @@ class LiveMapController extends StatefulMapController with TickerProviderStateMi
         point: point,
         width: 80.0,
         height: 80.0,
-        builder: _liveMarkerWidgetBuilder;
+        builder: _liveMarkerWidgetBuilder);
     _liveMarker = liveMarker;
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
@@ -162,7 +166,7 @@ class LiveMapController extends StatefulMapController with TickerProviderStateMi
     final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
 
     var _mapAnimationController = new AnimationController(
-        duration: const Duration(milliseconds: 100), vsync: this);
+        duration: const Duration(milliseconds: 100), vsync: tickerProvider);
 
     Animation<double> animation = CurvedAnimation(
         parent: _mapAnimationController, curve: Curves.fastOutSlowIn);
