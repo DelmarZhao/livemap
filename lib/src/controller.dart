@@ -77,13 +77,13 @@ class LiveMapController extends StatefulMapController{
   }
 
   ///the current heading
-  double _curHeading;
+  double _curHeading = 0;
 
   /// Updates the livemarker on the map from a Geolocator position
   Future<void> updateLiveGeoMarkerFromPosition(
       {@required Position position}) async {
     if (position == null) throw ArgumentError("position must not be null");
-    _curHeading = position.speed == 0 ? _curHeading : position.heading;
+    _curHeading = (position.speed == 0) ? _curHeading : position.heading;
 
     _liveMarker ??= Marker(
         point: LatLng(0.0, 0.0),
@@ -96,6 +96,7 @@ class LiveMapController extends StatefulMapController{
     try {
       await removeMarker(name: "livemarker");
     } catch (e) {
+      print(e);
       print("WARNING: livemap: can not remove livemarker from map");
     }
     Marker liveMarker = Marker(
