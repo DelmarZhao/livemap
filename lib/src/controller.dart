@@ -174,6 +174,7 @@ class LiveMapController extends StatefulMapController{
     });
 
     animation.addStatusListener((status) {
+      print(status);
       if (status == AnimationStatus.completed) {
         animationController.dispose();
       } else if (status == AnimationStatus.dismissed) {
