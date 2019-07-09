@@ -173,6 +173,14 @@ class LiveMapController extends StatefulMapController{
           _zoomTween.evaluate(animation));
     });
 
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        animationController.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        animationController.dispose();
+      }
+    });
+
     animationController.forward();
   }
 }
