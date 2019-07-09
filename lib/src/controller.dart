@@ -16,7 +16,6 @@ class LiveMapController extends StatefulMapController{
       {@required this.mapController,
       this.positionStream,
       this.positionStreamEnabled,
-      @required this.animationController,
       @required this.liveMarkerImage})
       : assert(mapController != null),
         super(mapController: mapController) {
@@ -49,9 +48,6 @@ class LiveMapController extends StatefulMapController{
   StreamSubscription<Position> _positionStreamSubscription;
   final Completer<Null> _livemapReadyCompleter = Completer<Null>();
   final _subject = PublishSubject<StatefulMapControllerStateChange>();
-
-  /// The ticker provider for animations
-  AnimationController animationController;
 
   /// On ready callback: this is fired when the contoller is ready
   Future<Null> get onLiveMapReady => _livemapReadyCompleter.future;
@@ -104,14 +100,14 @@ class LiveMapController extends StatefulMapController{
 
   /// Center the map on the live marker
   Future<void> centerOnLiveMarker() async {
-    animatedMapMove(_liveMarker.point, mapController.zoom);
+    mapController.move(_liveMarker.point, mapController.zoom);
   }
 
   /// Center the map on a [Position]
   Future<void> centerOnPosition(Position position) async {
     //print("CENTER ON $position");
     LatLng _newCenter = LatLng(position.latitude, position.longitude);
-    animatedMapMove(_newCenter, mapController.zoom);
+    mapController.move(_newCenter, mapController.zoom);
     centerOnPoint(_newCenter);
     notify("center", _newCenter, centerOnPosition);
   }
@@ -157,31 +153,4 @@ class LiveMapController extends StatefulMapController{
         _positionStreamCallbackAction);
   }
 
-  void animatedMapMove(LatLng destLocation, double destZoom) {
-    final _latTween = Tween<double>(
-        begin: mapController.center.latitude, end: destLocation.latitude);
-    final _lngTween = Tween<double>(
-        begin: mapController.center.longitude, end: destLocation.longitude);
-    final _zoomTween = Tween<double>(begin: mapController.zoom, end: destZoom);
-
-    Animation<double> animation = CurvedAnimation(
-        parent: animationController, curve: Curves.linear);
-
-    animationController.addListener(() {
-      mapController.move(
-          LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)),
-          _zoomTween.evaluate(animation));
-    });
-
-    animation.addStatusListener((status) {
-      print(status);
-      if (status == AnimationStatus.completed) {
-        animationController.dispose();
-      } else if (status == AnimationStatus.dismissed) {
-        animationController.dispose();
-      }
-    });
-
-    animationController.forward();
-  }
 }
