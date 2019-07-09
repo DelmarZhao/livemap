@@ -121,12 +121,6 @@ class LiveMapController extends StatefulMapController{
     );
   }
 
-  Widget destinationMarkerWidgetBuilder(BuildContext _) {
-    return Container(
-      child: Icon(Icons.location_on, color: Colors.red)
-    );
-  }
-
   /// Toggle live position stream updates
   void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
     positionStreamEnabled = !positionStreamEnabled;
